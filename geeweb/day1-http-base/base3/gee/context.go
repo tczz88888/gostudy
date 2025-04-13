@@ -13,6 +13,7 @@ type Context struct {
 	Req        *http.Request
 	Path       string
 	Method     string
+	Params     map[string]string
 	StatusCode int
 }
 
@@ -25,6 +26,10 @@ func newContext(w http.ResponseWriter, r *http.Request) *Context {
 	}
 }
 
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
+}
 func (c *Context) PostForm(key string) string {
 	return c.Req.FormValue(key)
 } //解析post中content的数据
