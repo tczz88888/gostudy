@@ -35,6 +35,12 @@ func (engine *Engine) LoadHTMLGlob(pattern string) {
 	engine.htmlTemplates = template.Must(template.New("").Funcs(engine.funcMap).ParseGlob(pattern))
 }
 
+func Default() *Engine {
+	engine := New()
+	engine.Use(Logger(), Recovery())
+	return engine
+}
+
 func (group *RouterGroup) Use(midlewares ...HandlerFunc) {
 	group.middlewares = append(group.middlewares, midlewares...)
 }
@@ -85,6 +91,7 @@ func (engine *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	c := newContext(w, r)
 	c.handlers = middlewares
+	c.engine = engine
 	engine.router.handle(c)
 }
 
